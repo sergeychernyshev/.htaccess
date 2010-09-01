@@ -1,4 +1,4 @@
-Copy .htaccess file to improve performance of your web site.
+Copy [.htaccess](http://github.com/sergeychernyshev/.htaccess/raw/master/.htaccess) file to your site to improve front-end performance.
 
 Contributing
 ------------
