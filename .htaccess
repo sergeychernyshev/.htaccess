@@ -3,24 +3,8 @@
 	# Insert filter
 	SetOutputFilter DEFLATE
 
-	# Netscape 4.x has some problems...
-	BrowserMatch ^Mozilla/4 gzip-only-text/html
-
-	# Netscape 4.06-4.08 have some more problems
-	BrowserMatch ^Mozilla/4\.0[678] no-gzip
-
-	# NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48
-	# the above regex won't work. You can use the following
-	# workaround to get the desired effect:
-	BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
-
 	# Don't compress images
-	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
-
-	<IfModule mod_headers.c>
-		# Make sure proxies don't deliver the wrong content
-		Header append Vary User-Agent env=!dont-vary
-	</IfModule>
+	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip 
 </IfModule>
 
 # Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
