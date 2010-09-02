@@ -25,7 +25,13 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|ico)$ no-gzip
 <IfModule mod_rewrite.c>
 SetEnv mod_rewrite On
 RewriteEngine On
+
+# Setting up an environment variable so your code can detect if mod_rewrite rules are executable
+# in this folder and you can use file.123.jpg or you need to fall back to file.jpg?123
 RewriteRule .					-	[E=URLVERSIONREWRITE:YES]
+
+# Rewrites a version in file.123.jpg as well as timestamped version file.123_m_12345123512354.jpg
+# to original file.jpg so you can use it instead of file.jpg?123 which isn't cached in some proxies.
 RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$	$1.$4	[L,QSA]
 </IfModule>
 
