@@ -15,7 +15,7 @@
 	BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
 
 	# Don't compress images
-	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|ico)$ no-gzip dont-vary
+	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
 
 	<IfModule mod_headers.c>
 		# Make sure proxies don't deliver the wrong content
