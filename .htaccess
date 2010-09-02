@@ -1,26 +1,26 @@
 <IfModule mod_deflate.c>
-SetEnv mod_deflate On
-# Insert filter
-SetOutputFilter DEFLATE
+	SetEnv mod_deflate On
+	# Insert filter
+	SetOutputFilter DEFLATE
 
-# Netscape 4.x has some problems...
-BrowserMatch ^Mozilla/4 gzip-only-text/html
+	# Netscape 4.x has some problems...
+	BrowserMatch ^Mozilla/4 gzip-only-text/html
 
-# Netscape 4.06-4.08 have some more problems
-BrowserMatch ^Mozilla/4\.0[678] no-gzip
+	# Netscape 4.06-4.08 have some more problems
+	BrowserMatch ^Mozilla/4\.0[678] no-gzip
 
-# NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48
-# the above regex won't work. You can use the following
-# workaround to get the desired effect:
-BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+	# NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48
+	# the above regex won't work. You can use the following
+	# workaround to get the desired effect:
+	BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
 
-# Don't compress images
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|ico)$ no-gzip dont-vary
+	# Don't compress images
+	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|ico)$ no-gzip dont-vary
 
-<IfModule mod_headers.c>
-# Make sure proxies don't deliver the wrong content
-Header append Vary User-Agent env=!dont-vary
-</IfModule>
+	<IfModule mod_headers.c>
+		# Make sure proxies don't deliver the wrong content
+		Header append Vary User-Agent env=!dont-vary
+	</IfModule>
 </IfModule>
 
 # Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
@@ -28,27 +28,27 @@ Header append Vary User-Agent env=!dont-vary
 #
 # More proxies cache assets if there is no query string
 <IfModule mod_rewrite.c>
-SetEnv mod_rewrite On
-RewriteEngine On
+	SetEnv mod_rewrite On
+	RewriteEngine On
 
-# Setting up an environment variable so your code can detect if mod_rewrite rules are executable
-# in this folder and you can use file.123.jpg or you need to fall back to file.jpg?123
-RewriteRule .					-	[E=URLVERSIONREWRITE:YES]
+	# Setting up an environment variable so your code can detect if mod_rewrite rules are executable
+	# in this folder and you can use file.123.jpg or you need to fall back to file.jpg?123
+	RewriteRule .					-	[E=URLVERSIONREWRITE:YES]
 
-# Rewrites a version in file.123.jpg as well as timestamped version file.123_m_12345123512354.jpg
-# to original file.jpg so you can use it instead of file.jpg?123 which isn't cached in some proxies.
-RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$	$1.$4	[L,QSA]
+	# Rewrites a version in file.123.jpg as well as timestamped version file.123_m_12345123512354.jpg
+	# to original file.jpg so you can use it instead of file.jpg?123 which isn't cached in some proxies.
+	RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$	$1.$4	[L,QSA]
 </IfModule>
 
 <IfModule mod_expires.c>
-SetEnv mod_expires On
-ExpiresActive On
-ExpiresByType image/png "access plus 1 year"
-ExpiresByType image/gif "access plus 1 year"
-ExpiresByType image/jpeg "access plus 1 year"
-ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
-ExpiresByType text/css "access plus 1 year"
-ExpiresByType application/x-javascript "access plus 1 year"
-ExpiresByType application/javascript "access plus 1 year"
-ExpiresByType text/javascript "access plus 1 year"
+	SetEnv mod_expires On
+	ExpiresActive On
+	ExpiresByType image/png			"access plus 1 year"
+	ExpiresByType image/gif			"access plus 1 year"
+	ExpiresByType image/jpeg		"access plus 1 year"
+	ExpiresByType image/vnd.microsoft.icon	"access plus 1 year"
+	ExpiresByType text/css			"access plus 1 year"
+	ExpiresByType application/x-javascript	"access plus 1 year"
+	ExpiresByType application/javascript	"access plus 1 year"
+	ExpiresByType text/javascript		"access plus 1 year"
 </IfModule>
