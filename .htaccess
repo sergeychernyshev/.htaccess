@@ -15,7 +15,12 @@ BrowserMatch ^Mozilla/4\.0[678] no-gzip
 BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
 
 # Don't compress images
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|ico)$ no-gzip
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|ico)$ no-gzip dont-vary
+
+<IfModule mod_headers.c>
+# Make sure proxies don't deliver the wrong content
+Header append Vary User-Agent env=!dont-vary
+</IfModule>
 </IfModule>
 
 # Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
