@@ -18,6 +18,11 @@ BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
 SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|ico)$ no-gzip
 </IfModule>
 
+<IfModule mod_headers.c>
+# Make sure proxies don't deliver the wrong content
+Header append Vary User-Agent env=!dont-vary
+</IfModule>
+
 # Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
 # Otherwise URLs will use query strings (file.ext?v=XXX)
 #
