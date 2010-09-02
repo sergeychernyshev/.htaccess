@@ -30,8 +30,9 @@ Header append Vary User-Agent env=!dont-vary
 <IfModule mod_rewrite.c>
 SetEnv mod_rewrite On
 RewriteEngine On
-RewriteRule .					-	[E=URLVERSIONREWRITE:YES]
-RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$	$1.$4	[L,QSA]
+# rewrite virtual version to static folder
+# /s123/* -> static/*
+RewriteRule ^/s(\d+)(.*)$ /static$2 [L]
 </IfModule>
 
 <IfModule mod_expires.c>
