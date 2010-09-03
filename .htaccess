@@ -35,3 +35,6 @@
 # Remove ETags
 Header unset ETag
 FileETag None
+
+# disable the server signature
+ServerSignature Off
