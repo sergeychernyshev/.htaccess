@@ -40,6 +40,12 @@
 <IfModule mod_headers.c>
   # Try removing etag headers (if it's coming from proxy for example)
   Header unset ETag
+
+  # Add chrome frame
+  <IfModule mod_setenvif.c>
+    BrowserMatch MSIE ie
+    Header set X-UA-Compatible "IE=Edge,chrome=1" env=ie
+  </IfModule>
 </IfModule>
 
 # Remove ETags
