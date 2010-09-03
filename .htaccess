@@ -32,6 +32,11 @@
 	ExpiresByType text/javascript		"access plus 1 year"
 </IfModule>
 
+# Deny access to certain files
+<FilesMatch "\.(inc|test|.*sql|svn-base|htaccess|htpasswd)$|^(Entries.*|Repository|Root|Tag|all-wcprops|entries|format)$">
+  Order allow,deny
+</FilesMatch>
+
 # Remove ETags
 Header unset ETag
 FileETag None
