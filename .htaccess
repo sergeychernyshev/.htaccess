@@ -32,6 +32,10 @@
 	ExpiresByType text/javascript		"access plus 1 year"
 </IfModule>
 
+<IfModule mod_headers.c>
+	# Try removing etag headers (if it's coming from proxy for example)
+	Header unset ETag
+</IfModule>
+
 # Remove ETags
-Header unset ETag
 FileETag None
