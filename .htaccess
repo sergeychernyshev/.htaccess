@@ -1,10 +1,5 @@
 <IfModule mod_deflate.c>
-	SetEnv mod_deflate On
-	# Insert filter
-	SetOutputFilter DEFLATE
-
-	# Don't compress images
-	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip 
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/x-javascrip    t application/javascript
 </IfModule>
 
 # Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
