@@ -1,5 +1,5 @@
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json application/xml text/x-component
+  AddOutputFilter DEFLATE text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json application/xml text/x-component
 </IfModule>
 
 # Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
