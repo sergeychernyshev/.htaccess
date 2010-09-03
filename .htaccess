@@ -31,3 +31,7 @@
 	ExpiresByType application/javascript	"access plus 1 year"
 	ExpiresByType text/javascript		"access plus 1 year"
 </IfModule>
+
+# Remove ETags
+Header unset ETag
+FileETag None
