@@ -1,5 +1,28 @@
+# Compression: http://code.google.com/speed/page-speed/docs/payload.html#GzipCompression
 <IfModule mod_deflate.c>
-	AddOutputFilter DEFLATE text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/json application/xml text/x-component
+	AddOutputFilter DEFLATE application/atom+xml
+	AddOutputFilter DEFLATE application/json
+	AddOutputFilter DEFLATE application/xhtml+xml
+	AddOutputFilter DEFLATE application/xml
+	AddOutputFilter DEFLATE text/css
+	AddOutputFilter DEFLATE text/html
+	AddOutputFilter DEFLATE text/plain
+	AddOutputFilter DEFLATE text/x-component
+	AddOutputFilter DEFLATE text/xml
+	
+	# The following MIME types are in the process of registration
+	AddOutputFilter DEFLATE application/xslt+xml
+	AddOutputFilter DEFLATE image/svg+xml
+	
+	# The following MIME types are NOT registered
+	AddOutputFilter DEFLATE application/mathml+xml
+	AddOutputFilter DEFLATE application/rss+xml
+	
+	# JavaScript has various MIME types
+	AddOutputFilter DEFLATE application/javascript
+	AddOutputFilter DEFLATE application/x-javascript
+	AddOutputFilter DEFLATE text/ecmascript
+	AddOutputFilter DEFLATE text/javascript
 </IfModule>
 
 # Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
