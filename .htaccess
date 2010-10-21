@@ -1,9 +1,40 @@
+# JavaScript MIME type issues:
+#   1. Apache uses "application/javascript": http://svn.apache.org/repos/asf/httpd/httpd/branches/1.3.x/conf/mime.types
+#   2. IIS uses "application/x-javascript": http://technet.microsoft.com/en-us/library/bb742440.aspx
+#   3. SVG specification says it is text/ecmascript: http://www.w3.org/TR/2001/REC-SVG-20010904/script.html#ScriptElement
+#   4. HTML specification says it is text/javascript: http://www.w3.org/TR/1999/REC-html401-19991224/interact/scripts.html#h-18.2.2.2
+#   5. "text/ecmascript" and "text/javascript" are considered obsolete: http://www.rfc-editor.org/rfc/rfc4329.txt
+
+
+# Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
+# Otherwise URLs will use query strings (file.ext?v=XXX)
+#
+# More proxies cache assets if there is no query string
+#
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	
+	# Setting up an environment variable so your code can detect if mod_rewrite rules are executable
+	# in this folder and you can use file.123.jpg or you need to fall back to file.jpg?123
+	RewriteRule . - [E=URLVERSIONREWRITE:YES]
+	
+	# Rewrites a version in file.123.jpg as well as timestamped version file.123_m_12345123512354.jpg
+	# to original file.jpg so you can use it instead of file.jpg?123 which isn't cached in some proxies.
+	RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$ $1.$4 [L,QSA]
+</IfModule>
+
+#======================================================================================================
 # Compression: http://code.google.com/speed/page-speed/docs/payload.html#GzipCompression
+#======================================================================================================
 <IfModule mod_deflate.c>
+	# Applications
 	AddOutputFilter DEFLATE application/atom+xml
 	AddOutputFilter DEFLATE application/json
+	AddOutputFilter DEFLATE application/rss+xml
 	AddOutputFilter DEFLATE application/xhtml+xml
 	AddOutputFilter DEFLATE application/xml
+	
+	# Texts
 	AddOutputFilter DEFLATE text/css
 	AddOutputFilter DEFLATE text/html
 	AddOutputFilter DEFLATE text/plain
@@ -25,24 +56,9 @@
 	AddOutputFilter DEFLATE text/javascript
 </IfModule>
 
-# Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
-# Otherwise URLs will use query strings (file.ext?v=XXX)
-#
-# More proxies cache assets if there is no query string
-<IfModule mod_rewrite.c>
-	RewriteEngine On
-
-	# Setting up an environment variable so your code can detect if mod_rewrite rules are executable
-	# in this folder and you can use file.123.jpg or you need to fall back to file.jpg?123
-	RewriteRule .					-	[E=URLVERSIONREWRITE:YES]
-
-	# Rewrites a version in file.123.jpg as well as timestamped version file.123_m_12345123512354.jpg
-	# to original file.jpg so you can use it instead of file.jpg?123 which isn't cached in some proxies.
-	RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$	$1.$4	[L,QSA]
-</IfModule>
-
+#======================================================================================================
 # Browser Caching: http://code.google.com/speed/page-speed/docs/caching.html#LeverageBrowserCaching
-#
+#======================================================================================================
 # Google recommends specifying the following for all cacheable resources:
 #
 #    1. Expires or Cache-Control max-age
@@ -56,23 +72,33 @@
 # 	Set the Last-Modified date to the last time the resource was changed. If the Last-Modified
 #	date is sufficiently far enough in the past, chances are the browser won't refetch it. 
 #
-# Per Google: "it is redundant to specify both Expires and Cache-Control: max-age, or to specify
+# Per Google: "It is redundant to specify both Expires and Cache-Control: max-age, or to specify
 # both Last-Modified and ETag."
 <IfModule mod_expires.c>
 	ExpiresActive On
 
+	# Applications
+	ExpiresByType application/atom+xml		"access plus 1 year"
 	ExpiresByType application/json			"access plus 1 year"
+	ExpiresByType application/xml			"access plus 1 year"
 	ExpiresByType application/pdf			"access plus 1 year"
 	ExpiresByType application/x-shockwave-flash	"access plus 1 year"
-	ExpiresByType image/bmp 			"access plus 1 year"
-	ExpiresByType image/gif 			"access plus 1 year"
-	ExpiresByType image/jpeg 			"access plus 1 year"
-	ExpiresByType image/png 			"access plus 1 year"
-	ExpiresByType image/svg+xml 			"access plus 1 year"
-	ExpiresByType image/tiff 			"access plus 1 year"
+	
+	# Images
+	ExpiresByType image/bmp				"access plus 1 year"
+	ExpiresByType image/gif				"access plus 1 year"
+	ExpiresByType image/jpeg			"access plus 1 year"
+	ExpiresByType image/png				"access plus 1 year"
+	ExpiresByType image/svg+xml			"access plus 1 year"
+	ExpiresByType image/tiff			"access plus 1 year"
 	ExpiresByType image/vnd.microsoft.icon 		"access plus 1 year"
-	ExpiresByType text/css 				"access plus 1 year"
-	ExpiresByType video/x-flv 			"access plus 1 year"
+	
+	# Texts
+	ExpiresByType text/css				"access plus 1 year"
+	ExpiresByType text/plain			"access plus 1 year"
+	ExpiresByType text/x-component			"access plus 1 year"
+	ExpiresByType text/xml				"access plus 1 year"
+	ExpiresByType video/x-flv			"access plus 1 year"
 
 	# The following MIME types are in the process of registration
 	ExpiresByType application/xslt+xml		"access plus 1 year"
@@ -80,21 +106,65 @@
 
 	# The following MIME types are NOT registered
 	ExpiresByType application/mathml+xml		"access plus 1 year"
-	ExpiresByType application/rss+xml		"access plus 1 year"
+	# TODO: research if this should be treated like HTML and not be cached
+	#ExpiresByType application/rss+xml		"access plus 1 year"
 
 	# JavaScript has various MIME types
-	ExpiresByType application/x-javascript 		"access plus 1 year"
-	ExpiresByType application/javascript 		"access plus 1 year"
-	ExpiresByType text/ecmascript 			"access plus 1 year"
-	ExpiresByType text/javascript 			"access plus 1 year"
+	ExpiresByType application/x-javascript		"access plus 1 year"
+	ExpiresByType application/javascript		"access plus 1 year"
+	ExpiresByType text/ecmascript			"access plus 1 year"
+	ExpiresByType text/javascript			"access plus 1 year"
 </IfModule>
-
-# TODO: Set Last-Modified per Google's recommendation to complete browser caching
 
 <IfModule mod_headers.c>
-	# Try removing etag headers (if it's coming from proxy for example)
-	Header unset ETag
+	<FilesMatch "\.(atom|json|xml|pdf|swf|bmp|gif|jpeg|jpg|png|svg|tiff|ico|css|txt|htc|xml|flv|xslt|svg|mathml|js)$">
+		# Per Google: "Set the Last-Modified date to the last time the resource was changed. If the Last-Modified
+		# date is sufficiently far enough in the past, chances are the browser won't refetch it." 	
+		Header set Last-Modified "Thu, 01 Jan 1970 00:00:00 GMT"
+		
+		# Per Google: "Internet Explorer does not cache any resources that are served with the Vary header and any fields
+		# but Accept-Encoding and User-Agent. To ensure these resources are cached by IE, make sure to strip out any
+		# other fields from the Vary header, or remove the Vary header altogether if possible
+		Header unset Vary
+		
+		# http://www.askapache.com/htaccess/apache-speed-etags.html (this also helps proxy caching)
+		Header unset ETag		
+	</FilesMatch>
 </IfModule>
 
-# Remove ETags
+# TODO:
+# Some versions of Firefox require that the Cache control: public header to be set in order for resources
+# sent over SSL to be cached on disk, even if the other caching headers are explicitly set. Although this
+# header is normally used to enable caching by proxy servers (as described below), proxies cannot cache
+# any content sent over HTTPS, so it is always safe to set this header for HTTPS resources.
+
+#======================================================================================================
+# Proxy Caching: http://code.google.com/speed/page-speed/docs/caching.html#LeverageProxyCaching
+#======================================================================================================
+<IfModule mod_headers.c>
+	# Per Google: "Use the Cache-control: public header to indicate that a resource can be cached by public
+	# web proxies in addition to the browser that issued the request."
+	<FilesMatch "\.(atom|json|xml|pdf|swf|bmp|gif|jpeg|jpg|png|svg|tiff|ico|css|txt|htc|xml|flv|xslt|svg|mathml|js)$">
+		Header set Cache-Control "public"			
+	</FilesMatch>
+
+	# TODO: Cache-Control "private" for resources that set cookies
+
+	<FilesMatch "\.(css|js)$">
+    	# Per Google: "Some public proxies have bugs that do not detect the presence of the Content-Encoding
+    	# response header. This can result in compressed versions being delivered to client browsers that
+    	# cannot properly decompress the files. Since these files should always be gzipped by your server, to
+    	# ensure that the client can correctly read the files, do either of the following:"
+	
+		# Ideal for multi-homed applications
+		# Header set Cache-Control "public"
+			
+		# Ideal for singly homed applications
+		Header set Vary "Accept-Encoding"
+	</FilesMatch>
+</IfModule>
+
+# TODO: Don't include a query string in the URL for static resources
+
+# http://developer.yahoo.com/performance/rules.html#etags
 FileETag None
