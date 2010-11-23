@@ -1,30 +1,3 @@
-<IfModule mod_rewrite.c>
-   RewriteEngine On
-   RewriteBase /
-
-   #Removes access to the system folder by users.
-   #Additionally this will allow you to create a System.php controller,
-   #previously this would not have been possible.
-   #'system' can be replaced if you have renamed your system folder.
-   RewriteCond %{REQUEST_URI} ^system.*
-   RewriteRule ^(.*)$ index.php/$1 [L]
-
-   #Checks to see if the user is attempting to access a valid file,
-   #such as an image or css document, if this isn't true it sends the
-   #request to index.php
-   RewriteCond %{REQUEST_FILENAME} !-f
-   RewriteCond %{REQUEST_FILENAME} !-d
-   RewriteRule ^(.*)$ index.php/$1 [L]
-</IfModule>
-
-<IfModule !mod_rewrite.c>
-   # If we don't have mod_rewrite installed, all 404's
-   # can be sent to index.php, and everything works as normal.
-   # Submitted by: ElliotHaughin
-
-   ErrorDocument 404 /index.php
-</IfModule>
-
 # JavaScript MIME type issues:
 #   1. Apache uses "application/javascript": http://svn.apache.org/repos/asf/httpd/httpd/branches/1.3.x/conf/mime.types
 #   2. IIS uses "application/x-javascript": http://technet.microsoft.com/en-us/library/bb742440.aspx
@@ -115,29 +88,29 @@
 	ExpiresByType application/pdf				"access plus 10 years"
 	# TODO: research if rss+xml should be treated like HTML and not be cached
 	ExpiresByType application/rss+xml			"access plus 10 years"
-	ExpiresByType application/x-shockwave-flash	"access plus 10 years"
+	ExpiresByType application/x-shockwave-flash	        "access plus 10 years"
 	ExpiresByType application/xml				"access plus 10 years"
 
 	# Images
-	ExpiresByType image/bmp						"access plus 10 years"
-	ExpiresByType image/gif						"access plus 10 years"
-	ExpiresByType image/jpeg					"access plus 10 years"
-	ExpiresByType image/png						"access plus 10 years"
-	ExpiresByType image/tiff					"access plus 10 years"
-	ExpiresByType image/vnd.microsoft.icon 		"access plus 10 years"
+	ExpiresByType image/bmp					"access plus 10 years"
+	ExpiresByType image/gif					"access plus 10 years"
+	ExpiresByType image/jpeg				"access plus 10 years"
+	ExpiresByType image/png					"access plus 10 years"
+	ExpiresByType image/tiff				"access plus 10 years"
+	ExpiresByType image/vnd.microsoft.icon 			"access plus 10 years"
 	
 	# Texts
-	ExpiresByType text/css						"access plus 10 years"
-	ExpiresByType text/plain					"access plus 10 years"
+	ExpiresByType text/css					"access plus 10 years"
+	ExpiresByType text/plain				"access plus 10 years"
 	ExpiresByType text/x-component				"access plus 10 years"
-	ExpiresByType text/xml						"access plus 10 years"
+	ExpiresByType text/xml					"access plus 10 years"
 	
 	# Videos
-	ExpiresByType video/x-flv					"access plus 10 years"
+	ExpiresByType video/x-flv				"access plus 10 years"
 
 	# JavaScript has various MIME types
-	ExpiresByType application/x-javascript		"access plus 10 years"
-	ExpiresByType application/javascript		"access plus 10 years"
+	ExpiresByType application/x-javascript			"access plus 10 years"
+	ExpiresByType application/javascript			"access plus 10 years"
 	ExpiresByType text/ecmascript				"access plus 10 years"
 	ExpiresByType text/javascript				"access plus 10 years"
 </IfModule>
