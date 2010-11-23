@@ -1,10 +1,41 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine On
+   RewriteBase /
+
+   #Removes access to the system folder by users.
+   #Additionally this will allow you to create a System.php controller,
+   #previously this would not have been possible.
+   #'system' can be replaced if you have renamed your system folder.
+   RewriteCond %{REQUEST_URI} ^system.*
+   RewriteRule ^(.*)$ index.php/$1 [L]
+
+   #Checks to see if the user is attempting to access a valid file,
+   #such as an image or css document, if this isn't true it sends the
+   #request to index.php
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+   # If we don't have mod_rewrite installed, all 404's
+   # can be sent to index.php, and everything works as normal.
+   # Submitted by: ElliotHaughin
+
+   ErrorDocument 404 /index.php
+</IfModule>
+
 # JavaScript MIME type issues:
 #   1. Apache uses "application/javascript": http://svn.apache.org/repos/asf/httpd/httpd/branches/1.3.x/conf/mime.types
 #   2. IIS uses "application/x-javascript": http://technet.microsoft.com/en-us/library/bb742440.aspx
 #   3. SVG specification says it is text/ecmascript: http://www.w3.org/TR/2001/REC-SVG-20010904/script.html#ScriptElement
 #   4. HTML specification says it is text/javascript: http://www.w3.org/TR/1999/REC-html401-19991224/interact/scripts.html#h-18.2.2.2
 #   5. "text/ecmascript" and "text/javascript" are considered obsolete: http://www.rfc-editor.org/rfc/rfc4329.txt
-
+#
+# NOTE: For every MIME type added to the mod_expires section, add the appropriate file extension in the
+# mode_headers section of browser and proxy caching. Conversely, for every file extension added to the
+# mod_headers section (either in the browser or proxy caching section), add the appropriate MIME type in
+# the mod_expires section of browser caching. 
 
 # Enabling filename rewriting (file.XXX.ext) if URL rewriting is enabled
 # Otherwise URLs will use query strings (file.ext?v=XXX)
@@ -41,14 +72,6 @@
 	AddOutputFilter DEFLATE text/x-component
 	AddOutputFilter DEFLATE text/xml
 	
-	# The following MIME types are in the process of registration
-	AddOutputFilter DEFLATE application/xslt+xml
-	AddOutputFilter DEFLATE image/svg+xml
-	
-	# The following MIME types are NOT registered
-	AddOutputFilter DEFLATE application/mathml+xml
-	AddOutputFilter DEFLATE application/rss+xml
-	
 	# JavaScript has various MIME types
 	AddOutputFilter DEFLATE application/javascript
 	AddOutputFilter DEFLATE application/x-javascript
@@ -73,63 +96,75 @@
 #	date is sufficiently far enough in the past, chances are the browser won't refetch it. 
 #
 # Per Google: "It is redundant to specify both Expires and Cache-Control: max-age, or to specify
-# both Last-Modified and ETag."
+# both Last-Modified and ETag. Do not set [Expires] to more than one year in the future, as that
+# violates the RFC guidelines."
+#
+# Steve Saunders, author of High Performance Web Sites: Essential Knowledge for Front-End Engineers,
+# points out that RFC 2616 suggests servers should not set an Expires date more than a year in the 
+# future. However, he also points out that this is merely a guideline.
+#
+# See: http://developer.yahoo.com/blogs/ydn/posts/2007/05/high_performanc_2/. Yahoo uses an agressive,
+# 10 year, far future expires header. Let's do the same.
 <IfModule mod_expires.c>
 	ExpiresActive On
 
 	# Applications
-	ExpiresByType application/atom+xml		"access plus 1 year"
-	ExpiresByType application/json			"access plus 1 year"
-	ExpiresByType application/xml			"access plus 1 year"
-	ExpiresByType application/pdf			"access plus 1 year"
-	ExpiresByType application/x-shockwave-flash	"access plus 1 year"
-	
+	# TODO: research if atom+xml should be treated like HTML and not be cached
+	ExpiresByType application/atom+xml			"access plus 10 years"	
+	ExpiresByType application/json				"access plus 10 years"
+	ExpiresByType application/pdf				"access plus 10 years"
+	# TODO: research if rss+xml should be treated like HTML and not be cached
+	ExpiresByType application/rss+xml			"access plus 10 years"
+	ExpiresByType application/x-shockwave-flash	"access plus 10 years"
+	ExpiresByType application/xml				"access plus 10 years"
+
 	# Images
-	ExpiresByType image/bmp				"access plus 1 year"
-	ExpiresByType image/gif				"access plus 1 year"
-	ExpiresByType image/jpeg			"access plus 1 year"
-	ExpiresByType image/png				"access plus 1 year"
-	ExpiresByType image/svg+xml			"access plus 1 year"
-	ExpiresByType image/tiff			"access plus 1 year"
-	ExpiresByType image/vnd.microsoft.icon 		"access plus 1 year"
+	ExpiresByType image/bmp						"access plus 10 years"
+	ExpiresByType image/gif						"access plus 10 years"
+	ExpiresByType image/jpeg					"access plus 10 years"
+	ExpiresByType image/png						"access plus 10 years"
+	ExpiresByType image/tiff					"access plus 10 years"
+	ExpiresByType image/vnd.microsoft.icon 		"access plus 10 years"
 	
 	# Texts
-	ExpiresByType text/css				"access plus 1 year"
-	ExpiresByType text/plain			"access plus 1 year"
-	ExpiresByType text/x-component			"access plus 1 year"
-	ExpiresByType text/xml				"access plus 1 year"
-	ExpiresByType video/x-flv			"access plus 1 year"
-
-	# The following MIME types are in the process of registration
-	ExpiresByType application/xslt+xml		"access plus 1 year"
-	ExpiresByType image/svg+xml			"access plus 1 year"
-
-	# The following MIME types are NOT registered
-	ExpiresByType application/mathml+xml		"access plus 1 year"
-	# TODO: research if this should be treated like HTML and not be cached
-	#ExpiresByType application/rss+xml		"access plus 1 year"
+	ExpiresByType text/css						"access plus 10 years"
+	ExpiresByType text/plain					"access plus 10 years"
+	ExpiresByType text/x-component				"access plus 10 years"
+	ExpiresByType text/xml						"access plus 10 years"
+	
+	# Videos
+	ExpiresByType video/x-flv					"access plus 10 years"
 
 	# JavaScript has various MIME types
-	ExpiresByType application/x-javascript		"access plus 1 year"
-	ExpiresByType application/javascript		"access plus 1 year"
-	ExpiresByType text/ecmascript			"access plus 1 year"
-	ExpiresByType text/javascript			"access plus 1 year"
+	ExpiresByType application/x-javascript		"access plus 10 years"
+	ExpiresByType application/javascript		"access plus 10 years"
+	ExpiresByType text/ecmascript				"access plus 10 years"
+	ExpiresByType text/javascript				"access plus 10 years"
 </IfModule>
 
 <IfModule mod_headers.c>
-	<FilesMatch "\.(atom|json|xml|pdf|swf|bmp|gif|jpeg|jpg|png|svg|tiff|ico|css|txt|htc|xml|flv|xslt|svg|mathml|js)$">
+	<FilesMatch "\.(atom|bmp|css|flv|gif|htc|ico|jpeg|jpg|js|json|pdf|png|rss|swf|tiff|txt|xml)$">
 		# Per Google: "Set the Last-Modified date to the last time the resource was changed. If the Last-Modified
 		# date is sufficiently far enough in the past, chances are the browser won't refetch it." 	
 		Header set Last-Modified "Thu, 01 Jan 1970 00:00:00 GMT"
-		
-		# Per Google: "Internet Explorer does not cache any resources that are served with the Vary header and any fields
-		# but Accept-Encoding and User-Agent. To ensure these resources are cached by IE, make sure to strip out any
-		# other fields from the Vary header, or remove the Vary header altogether if possible
-		Header unset Vary
-		
+			
 		# http://www.askapache.com/htaccess/apache-speed-etags.html (this also helps proxy caching)
 		Header unset ETag		
 	</FilesMatch>
+</IfModule>
+
+<IfModule mod_setenvif.c>
+		# Per Google: "Internet Explorer does not cache any resources that are served with the Vary header
+		# and any fields but Accept-Encoding and User-Agent. To ensure these resources are cached by IE,
+		# make sure to strip out any other fields from the Vary header, or remove the Vary header altogether
+		# if possible
+		#
+		# Solution: http://httpd.apache.org/docs/2.0/misc/known_client_problems.html
+		#BrowserMatch "MSIE 4\.0" force-no-vary
+		#BrowserMatch "MSIE 5\.0" force-no-vary
+		#BrowserMatch "MSIE 6\.0" force-no-vary
+		#BrowserMatch "MSIE 7\.0" force-no-vary 
+		#BrowserMatch "MSIE 8\.0" force-no-vary	 
 </IfModule>
 
 # TODO:
@@ -144,7 +179,7 @@
 <IfModule mod_headers.c>
 	# Per Google: "Use the Cache-control: public header to indicate that a resource can be cached by public
 	# web proxies in addition to the browser that issued the request."
-	<FilesMatch "\.(atom|json|xml|pdf|swf|bmp|gif|jpeg|jpg|png|svg|tiff|ico|css|txt|htc|xml|flv|xslt|svg|mathml|js)$">
+	<FilesMatch "\.(atom|bmp|css|flv|gif|htc|ico|jpeg|jpg|js|json|pdf|png|rss|swf|tiff|txt|xml)$">
 		Header set Cache-Control "public"			
 	</FilesMatch>
 
