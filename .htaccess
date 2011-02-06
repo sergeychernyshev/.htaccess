@@ -38,6 +38,7 @@
 
 	# Rewrites a version in file.123.jpg as well as timestamped version file.123_m_12345123512354.jpg
 	# to original file.jpg so you can use it instead of file.jpg?123 which isn't cached in some proxies.
+	RewriteCond %{REQUEST_FILENAME}			!-f
 	RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$	$1.$4	[L,QSA]
 </IfModule>
 
