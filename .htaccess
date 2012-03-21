@@ -35,24 +35,24 @@
 	# TODO: set caching for compression, if possible
 
 	# Applications
-	AddOutputFilter DEFLATE application/atom+xml
-	AddOutputFilter DEFLATE application/json
-	AddOutputFilter DEFLATE application/rss+xml
-	AddOutputFilter DEFLATE application/xhtml+xml
-	AddOutputFilter DEFLATE application/xml
+	AddOutputFilterByType DEFLATE application/atom+xml
+	AddOutputFilterByType DEFLATE application/json
+	AddOutputFilterByType DEFLATE application/rss+xml
+	AddOutputFilterByType DEFLATE application/xhtml+xml
+	AddOutputFilterByType DEFLATE application/xml
 	
 	# Texts
-	AddOutputFilter DEFLATE text/css
-	AddOutputFilter DEFLATE text/html
-	AddOutputFilter DEFLATE text/plain
-	AddOutputFilter DEFLATE text/x-component
-	AddOutputFilter DEFLATE text/xml
+	AddOutputFilterByType DEFLATE text/css
+	AddOutputFilterByType DEFLATE text/html
+	AddOutputFilterByType DEFLATE text/plain
+	AddOutputFilterByType DEFLATE text/x-component
+	AddOutputFilterByType DEFLATE text/xml
 	
 	# JavaScript has various MIME types
-	AddOutputFilter DEFLATE application/javascript
-	AddOutputFilter DEFLATE application/x-javascript
-	AddOutputFilter DEFLATE text/ecmascript
-	AddOutputFilter DEFLATE text/javascript
+	AddOutputFilterByType DEFLATE application/javascript
+	AddOutputFilterByType DEFLATE application/x-javascript
+	AddOutputFilterByType DEFLATE text/ecmascript
+	AddOutputFilterByType DEFLATE text/javascript
 </IfModule>
 
 #======================================================================================================
@@ -186,3 +186,6 @@
 
 # http://developer.yahoo.com/performance/rules.html#etags
 FileETag None
+
+# Set default character set
+AddDefaultCharset UTF-8
