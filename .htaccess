@@ -78,6 +78,7 @@
 	ExpiresByType image/svg+xml 			"access plus 1 year"
 	ExpiresByType image/tiff 			"access plus 1 year"
 	ExpiresByType image/vnd.microsoft.icon 		"access plus 1 year"
+  	ExpiresByType image/x-icon			"access plus 1 year"
 	ExpiresByType text/css 				"access plus 1 year"
 	ExpiresByType video/x-flv 			"access plus 1 year"
 	ExpiresByType application/vnd.bw-fontobject	"access plus 1 year"
