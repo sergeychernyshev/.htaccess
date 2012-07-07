@@ -83,7 +83,7 @@
 	ExpiresByType video/x-flv 			"access plus 1 year"
 	ExpiresByType application/vnd.bw-fontobject	"access plus 1 year"
 	ExpiresByType application/x-font-ttf		"access plus 1 year"
-	ExpiresByType application/x-woff		"access plus 1 year"
+	ExpiresByType application/font-woff		"access plus 1 year"
 
 	# The following MIME types are in the process of registration
 	ExpiresByType application/xslt+xml		"access plus 1 year"
