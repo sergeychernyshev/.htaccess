@@ -1,10 +1,3 @@
-# JavaScript MIME type issues:
-#   1. Apache uses "application/javascript": http://svn.apache.org/repos/asf/httpd/httpd/branches/1.3.x/conf/mime.types
-#   2. IIS uses "application/x-javascript": http://technet.microsoft.com/en-us/library/bb742440.aspx
-#   3. SVG specification says it is text/ecmascript: http://www.w3.org/TR/2001/REC-SVG-20010904/script.html#ScriptElement
-#   4. HTML specification says it is text/javascript: http://www.w3.org/TR/1999/REC-html401-19991224/interact/scripts.html#h-18.2.2.2
-#   5. "text/ecmascript" and "text/javascript" are considered obsolete: http://www.rfc-editor.org/rfc/rfc4329.txt
-#
 # NOTE: For every MIME type added to the mod_expires section, add the appropriate file extension in the
 # mode_headers section of browser and proxy caching. Conversely, for every file extension added to the
 # mod_headers section (either in the browser or proxy caching section), add the appropriate MIME type in
@@ -17,11 +10,11 @@
 #
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-	
+
 	# Setting up an environment variable so your code can detect if mod_rewrite rules are executable
 	# in this folder and you can use file.123.jpg or you need to fall back to file.jpg?123
 	RewriteRule . - [E=URLVERSIONREWRITE:YES]
-	
+
 	# Rewrites a version in file.123.jpg as well as timestamped version file.123_m_12345123512354.jpg
 	# to original file.jpg so you can use it instead of file.jpg?123 which isn't cached in some proxies.
 	RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$ $1.$4 [L,QSA]
@@ -36,6 +29,7 @@
 
 	# Applications
 	AddOutputFilterByType DEFLATE application/atom+xml
+	AddOutputFilterByType DEFLATE application/javascript
 	AddOutputFilterByType DEFLATE application/json
 	AddOutputFilterByType DEFLATE application/rss+xml
 	AddOutputFilterByType DEFLATE application/xhtml+xml
@@ -47,12 +41,6 @@
 	AddOutputFilterByType DEFLATE text/plain
 	AddOutputFilterByType DEFLATE text/x-component
 	AddOutputFilterByType DEFLATE text/xml
-	
-	# JavaScript has various MIME types
-	AddOutputFilterByType DEFLATE application/javascript
-	AddOutputFilterByType DEFLATE application/x-javascript
-	AddOutputFilterByType DEFLATE text/ecmascript
-	AddOutputFilterByType DEFLATE text/javascript
 </IfModule>
 
 #======================================================================================================
@@ -60,15 +48,15 @@
 #======================================================================================================
 # Google recommends specifying the following for all cacheable resources:
 #
-#    1. Expires or Cache-Control max-age
+#	1. Expires or Cache-Control max-age
 #
 # 	Set Expires to a minimum of one month, and preferably up to one year, in the future. (We
 # 	prefer Expires over Cache-Control: max-age because it is is more widely supported.) Do not
 # 	set it to more than one year in the future, as that violates the RFC guidelines.
 #
-#    2. Last-Modified or ETag
+#	2. Last-Modified or ETag
 #
-# 	Set the Last-Modified date to the last time the resource was changed. If the Last-Modified
+#	Set the Last-Modified date to the last time the resource was changed. If the Last-Modified
 #	date is sufficiently far enough in the past, chances are the browser won't refetch it. 
 #
 # Per Google: "It is redundant to specify both Expires and Cache-Control: max-age, or to specify
@@ -84,6 +72,7 @@
 	ExpiresActive On
 
 	# Applications
+	ExpiresByType application/javascript		"access plus 10 years"
 	ExpiresByType application/json				"access plus 10 years"
 	ExpiresByType application/pdf				"access plus 10 years"
 	ExpiresByType application/x-shockwave-flash	"access plus 10 years"
@@ -96,40 +85,34 @@
 	ExpiresByType image/png						"access plus 10 years"
 	ExpiresByType image/tiff					"access plus 10 years"
 	ExpiresByType image/vnd.microsoft.icon 		"access plus 10 years"
-	
+
 	# Texts
 	ExpiresByType text/css						"access plus 10 years"
 	ExpiresByType text/plain					"access plus 10 years"
 	ExpiresByType text/x-component				"access plus 10 years"
 	ExpiresByType text/xml						"access plus 10 years"
-	
+
 	# Videos
 	ExpiresByType video/x-flv					"access plus 10 years"
-
-	# JavaScript has various MIME types
-	ExpiresByType application/x-javascript		"access plus 10 years"
-	ExpiresByType application/javascript		"access plus 10 years"
-	ExpiresByType text/ecmascript				"access plus 10 years"
-	ExpiresByType text/javascript				"access plus 10 years"
 </IfModule>
 
 <IfModule mod_headers.c>
 	<FilesMatch "\.(bmp|css|flv|gif|htc|ico|jpeg|jpg|js|json|pdf|png|swf|tiff|txt|xml)$">
 		# Per Google: "It is redundant to specify both Expires and Cache-Control: max-age, or to specify
 		# both Last-Modified and ETag."
-		
+
 		# We have already specified Expires, so let's unset Cache-Control
 		# TODO: remove just "max-age", if possible (perhaps using "edit")
 		Header unset Cache-Control
-		
+
 		# Apache will set Last-Modified based on the resource's date, so let's unset ETag
 		Header unset ETag
 	</FilesMatch>
-	
+
 	# Per Google: "In general, HTML is not static, and shouldn't be considered cacheable."
 	<FilesMatch "\.(htm|html|php)$">
 		Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
-		
+
 		# TODO: Google.com's setting are the following
 		# Expires -1
 		# Cache-Control	private, max-age=0
@@ -171,14 +154,14 @@
 	</FilesMatch>	
 
 	<FilesMatch "\.(css|js)$">
-    	# Per Google: "Some public proxies have bugs that do not detect the presence of the Content-Encoding
-    	# response header. This can result in compressed versions being delivered to client browsers that
-    	# cannot properly decompress the files. Since these files should always be gzipped by your server, to
-    	# ensure that the client can correctly read the files, do either of the following:"
-	
+		# Per Google: "Some public proxies have bugs that do not detect the presence of the Content-Encoding
+		# response header. This can result in compressed versions being delivered to client browsers that
+		# cannot properly decompress the files. Since these files should always be gzipped by your server, to
+		# ensure that the client can correctly read the files, do either of the following:"
+
 		# Ideal for multi-homed applications
 		# Header set Cache-Control "public"
-			
+
 		# Ideal for singly homed applications
 		Header set Vary "Accept-Encoding"
 	</FilesMatch>
