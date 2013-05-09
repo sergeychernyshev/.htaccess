@@ -72,28 +72,28 @@
 	ExpiresActive On
 
 	# Applications
-	ExpiresByType application/javascript		"access plus 10 years"
-	ExpiresByType application/json				"access plus 10 years"
-	ExpiresByType application/pdf				"access plus 10 years"
-	ExpiresByType application/x-shockwave-flash	"access plus 10 years"
-	ExpiresByType application/xml				"access plus 10 years"
+	ExpiresByType application/javascript        "access plus 10 years"
+	ExpiresByType application/json              "access plus 10 years"
+	ExpiresByType application/pdf               "access plus 10 years"
+	ExpiresByType application/x-shockwave-flash "access plus 10 years"
+	ExpiresByType application/xml               "access plus 10 years"
 
 	# Images
-	ExpiresByType image/bmp						"access plus 10 years"
-	ExpiresByType image/gif						"access plus 10 years"
-	ExpiresByType image/jpeg					"access plus 10 years"
-	ExpiresByType image/png						"access plus 10 years"
-	ExpiresByType image/tiff					"access plus 10 years"
-	ExpiresByType image/vnd.microsoft.icon 		"access plus 10 years"
+	ExpiresByType image/bmp                     "access plus 10 years"
+	ExpiresByType image/gif                     "access plus 10 years"
+	ExpiresByType image/jpeg                    "access plus 10 years"
+	ExpiresByType image/png                     "access plus 10 years"
+	ExpiresByType image/tiff                    "access plus 10 years"
+	ExpiresByType image/vnd.microsoft.icon      "access plus 10 years"
 
 	# Texts
-	ExpiresByType text/css						"access plus 10 years"
-	ExpiresByType text/plain					"access plus 10 years"
-	ExpiresByType text/x-component				"access plus 10 years"
-	ExpiresByType text/xml						"access plus 10 years"
+	ExpiresByType text/css                      "access plus 10 years"
+	ExpiresByType text/plain                    "access plus 10 years"
+	ExpiresByType text/x-component              "access plus 10 years"
+	ExpiresByType text/xml                      "access plus 10 years"
 
 	# Videos
-	ExpiresByType video/x-flv					"access plus 10 years"
+	ExpiresByType video/x-flv                   "access plus 10 years"
 </IfModule>
 
 <IfModule mod_headers.c>
