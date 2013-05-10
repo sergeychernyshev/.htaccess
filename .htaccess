@@ -71,8 +71,8 @@ AddType	text/vtt				vtt
 	AddOutputFilterByType DEFLATE image/svg+xml
 	
 	# The following MIME types are NOT registered
-	AddOutputFilterByTypeByType DEFLATE application/mathml+xml
-	AddOutputFilterByTypeByType DEFLATE application/rss+xml
+	AddOutputFilterByType DEFLATE application/mathml+xml
+	AddOutputFilterByType DEFLATE application/rss+xml
 	
 	# JavaScript has various MIME types
 	AddOutputFilterByType DEFLATE application/javascript
