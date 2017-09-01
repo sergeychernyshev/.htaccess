@@ -139,7 +139,8 @@ AddType	text/vtt				vtt
 # --------------------------------------------------------------------------------------------------
 <IfModule mod_expires.c>
 	ExpiresActive On
-
+	
+	ExpiresDefault "access plus 1 year"
 	ExpiresByType application/json			"access plus 1 year"
 	ExpiresByType application/pdf			"access plus 1 year"
 	ExpiresByType application/x-shockwave-flash	"access plus 1 year"
